@@ -1,0 +1,68 @@
+# Create .gitignore file
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Data files (optional - if you want to keep data in repo, remove these lines)
+# data/train.csv
+# data/test.csv
+# !data/.gitkeep  # This keeps the folder but not the files
+
+# Model files (large files)
+*.pkl
+*.h5
+*.model
+*.joblib
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Plot images (optional - remove if you want to keep plots in repo)
+*.png
+
+# Kaggle API
+kaggle.json
+EOF
