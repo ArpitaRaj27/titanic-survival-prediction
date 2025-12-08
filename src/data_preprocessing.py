@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
+import warnings
+warnings.filterwarnings('ignore')
 
 class DataPreprocessor:
     def __init__(self):
@@ -10,9 +12,10 @@ class DataPreprocessor:
         self.embarked_imputer = SimpleImputer(strategy='most_frequent')
         self.fare_imputer = SimpleImputer(strategy='median')
         self.scaler = StandardScaler()
+        self.feature_order = None  # To store feature order
         
     def preprocess_train(self, df):
-        """Preprocess training data WITHOUT LabelEncoder issues"""
+        """Preprocess training data"""
         df = df.copy()
         
         # Extract title from name
@@ -34,7 +37,7 @@ class DataPreprocessor:
         # Drop unnecessary columns
         df = df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
         
-        # Convert categorical to numerical USING MAPPING (NO LabelEncoder)
+        # Convert categorical to numerical
         df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
         df['Embarked'] = df['Embarked'].map({'S': 0, 'C': 1, 'Q': 2})
         
@@ -50,10 +53,13 @@ class DataPreprocessor:
         numerical_features = ['Age', 'Fare', 'FamilySize']
         X[numerical_features] = self.scaler.fit_transform(X[numerical_features])
         
+        # Store feature order for consistency
+        self.feature_order = X.columns.tolist()
+        
         return X, y
     
     def preprocess_test(self, df):
-        """Preprocess test data using fitted transformers"""
+        """Preprocess test data"""
         df = df.copy()
         
         # Extract title
@@ -68,7 +74,7 @@ class DataPreprocessor:
         df['FamilySize'] = df['SibSp'] + df['Parch'] + 1
         df['IsAlone'] = (df['FamilySize'] == 1).astype(int)
         
-        # Fill missing values using fitted imputers
+        # Fill missing values
         df['Age'] = self.age_imputer.transform(df[['Age']])
         df['Fare'] = self.fare_imputer.fit_transform(df[['Fare']])
         df['Embarked'] = self.embarked_imputer.transform(df[['Embarked']])
@@ -79,16 +85,26 @@ class DataPreprocessor:
         # Drop columns
         df = df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
         
-        # Convert categorical to numerical USING SAME MAPPING
+        # Convert categorical to numerical (SAME MAPPING)
         df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
         df['Embarked'] = df['Embarked'].map({'S': 0, 'C': 1, 'Q': 2})
         
-        # Title mapping (use same as training)
+        # Title mapping
         title_mapping = {"Mr": 1, "Miss": 2, "Mrs": 3, "Master": 4, "Rare": 5}
         df['Title'] = df['Title'].map(title_mapping).fillna(0).astype(int)
         
         # Scale features
         numerical_features = ['Age', 'Fare', 'FamilySize']
         df[numerical_features] = self.scaler.transform(df[numerical_features])
+        
+        # Ensure same feature order as training
+        if self.feature_order:
+            # Add any missing columns with 0
+            for col in self.feature_order:
+                if col not in df.columns:
+                    df[col] = 0
+            
+            # Reorder columns to match training
+            df = df[self.feature_order]
         
         return df, passenger_ids

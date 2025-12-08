@@ -195,6 +195,8 @@ def create_correlation_plot(train_df):
     plt.close()
     print("   ✓ Saved: correlation_heatmap_large.png (standalone with large text)")
 
+# In the main() function, update the prediction section:
+
 def main():
     print("🚢 Titanic Survival Prediction Project")
     print("=" * 50)
@@ -234,7 +236,34 @@ def main():
     
     # Make predictions on test data
     print("\n4. 🔮 Making predictions on test data...")
+    
+    # Preprocess test data USING THE SAME PREPROCESSOR
     X_test, passenger_ids = preprocessor.preprocess_test(test_df)
+    
+    # Check if features match
+    print(f"   Training features: {X_train.columns.tolist()}")
+    print(f"   Test features: {X_test.columns.tolist()}")
+    
+    # Ensure same number of features
+    if X_train.shape[1] != X_test.shape[1]:
+        print(f"   WARNING: Feature mismatch! Train: {X_train.shape[1]}, Test: {X_test.shape[1]}")
+        print("   Attempting to fix...")
+        
+        # Find missing features
+        missing_in_test = set(X_train.columns) - set(X_test.columns)
+        missing_in_train = set(X_test.columns) - set(X_train.columns)
+        
+        if missing_in_test:
+            print(f"   Adding missing features to test: {missing_in_test}")
+            for col in missing_in_test:
+                X_test[col] = 0
+        
+        if missing_in_train:
+            print(f"   Removing extra features from test: {missing_in_train}")
+            X_test = X_test.drop(columns=list(missing_in_train))
+        
+        # Reorder to match
+        X_test = X_test[X_train.columns]
     
     # Load the best model and make predictions
     loaded_model = trainer.load_model('titanic_model.pkl')
@@ -277,6 +306,6 @@ def main():
     print("   - Survived vs Fare: Positive correlation (higher fare = better survival)")
     
     print("\n✅ Done! Open 'titanic_eda_large.png' and 'correlation_heatmap_large.png' to see clear visualizations.")
-
+    
 if __name__ == "__main__":
     main()
