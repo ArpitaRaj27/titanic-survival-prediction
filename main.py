@@ -10,10 +10,7 @@ def create_eda_plots(train_df):
     """Create Exploratory Data Analysis plots with readable font sizes"""
     print("\n📊 Creating Exploratory Data Analysis plots...")
     
-    # Set style with better font sizes
     plt.style.use('seaborn-v0_8-darkgrid')
-    
-    # Create a larger figure for better readability
     fig = plt.figure(figsize=(20, 18))
     
     # 1. Survival Distribution
@@ -26,7 +23,7 @@ def create_eda_plots(train_df):
     ax1.set_ylabel('Count', fontsize=12)
     ax1.tick_params(axis='both', labelsize=11)
     
-    # Add count labels on bars
+    # Adding count labels on bars
     for bar, count in zip(bars, survival_counts.values):
         height = bar.get_height()
         ax1.text(bar.get_x() + bar.get_width()/2., height + 10,
@@ -106,7 +103,7 @@ def create_eda_plots(train_df):
     ax7.legend(fontsize=11)
     ax7.tick_params(axis='both', labelsize=11)
     
-    # 8. Correlation Heatmap with better font sizes
+    # 8. Correlation Heatmap
     ax8 = plt.subplot(3, 3, 8)
     plot_data = train_df.copy()
     plot_data['Sex'] = plot_data['Sex'].map({'male': 0, 'female': 1})
@@ -122,7 +119,7 @@ def create_eda_plots(train_df):
     
     ax8.set_title('Feature Correlation Heatmap', fontsize=14, fontweight='bold')
     
-    # Adjust tick labels
+    # Adjusting tick labels
     ax8.set_xticklabels(ax8.get_xticklabels(), fontsize=11, rotation=45, ha='right')
     ax8.set_yticklabels(ax8.get_yticklabels(), fontsize=11, rotation=0)
     
@@ -134,27 +131,27 @@ def create_eda_plots(train_df):
     ax9.set_xlabel('Features', fontsize=12)
     ax9.set_ylabel('Passengers', fontsize=12)
     
-    # Adjust x-tick labels for missing values heatmap
+    # Adjusting x-tick labels for missing values heatmap
     ax9.set_xticklabels(ax9.get_xticklabels(), fontsize=11, rotation=45, ha='right')
-    ax9.set_yticklabels([])  # Hide y-tick labels for clarity
+    ax9.set_yticklabels([])  # Hiding y-tick labels for clarity
     
     plt.suptitle('Titanic Dataset - Exploratory Data Analysis', 
                 fontsize=18, fontweight='bold', y=1.02)
     
-    # Adjust layout with more padding
+    # Adjusting layout with more padding
     plt.tight_layout(pad=3.0)
     plt.savefig('titanic_eda_large.png', dpi=120, bbox_inches='tight')
     plt.close()
     print("   ✓ Saved: titanic_eda_large.png (with better font sizes)")
     
-    # Also create a simplified version with just the correlation heatmap
+    # Also creating a simplified version with just the correlation heatmap
     create_correlation_plot(train_df)
 
 def create_correlation_plot(train_df):
-    """Create a standalone correlation heatmap with large, clear text"""
+    """Creating a standalone correlation heatmap with large, clear text"""
     plt.figure(figsize=(14, 10))
     
-    # Prepare data
+    # Preparing data
     plot_data = train_df.copy()
     plot_data['Sex'] = plot_data['Sex'].map({'male': 0, 'female': 1})
     plot_data['Embarked'] = plot_data['Embarked'].map({'S': 0, 'C': 1, 'Q': 2})
@@ -163,7 +160,7 @@ def create_correlation_plot(train_df):
     
     correlation = plot_data.corr()
     
-    # Create heatmap with very clear text
+    # Creating heatmap with very clear text
     ax = sns.heatmap(correlation, annot=True, cmap='coolwarm', center=0, 
                     square=True, fmt='.2f',
                     annot_kws={'size': 14, 'weight': 'bold'},
@@ -172,17 +169,17 @@ def create_correlation_plot(train_df):
     plt.title('Feature Correlation Heatmap - Titanic Dataset', 
               fontsize=18, fontweight='bold', pad=20)
     
-    # Set axis labels with readable font size
+    # Setting axis labels with readable font size
     ax.set_xlabel('Features', fontsize=14, labelpad=15)
     ax.set_ylabel('Features', fontsize=14, labelpad=15)
     
-    # Adjust tick labels
+    # Adjusting tick labels
     feature_names = ['Survived', 'Pclass', 'Sex', 'Age', 'SibSp', 
                      'Parch', 'Fare', 'Embarked', 'FamilySize']
     ax.set_xticklabels(feature_names, fontsize=13, rotation=45, ha='right')
     ax.set_yticklabels(feature_names, fontsize=13, rotation=0)
     
-    # Add a note about interpretation
+    # Adding an interpretation note 
     plt.figtext(0.5, 0.01, 
                 'Note: Values close to +1 indicate strong positive correlation,\n'
                 'values close to -1 indicate strong negative correlation,\n'
@@ -195,13 +192,11 @@ def create_correlation_plot(train_df):
     plt.close()
     print("   ✓ Saved: correlation_heatmap_large.png (standalone with large text)")
 
-# In the main() function, update the prediction section:
-
 def main():
     print("🚢 Titanic Survival Prediction Project")
     print("=" * 50)
     
-    # Load data
+    # Loading data
     print("\n1. 📥 Loading data...")
     train_df = pd.read_csv('data/train.csv')
     test_df = pd.read_csv('data/test.csv')
@@ -209,47 +204,47 @@ def main():
     print(f"   Training data shape: {train_df.shape}")
     print(f"   Test data shape: {test_df.shape}")
     
-    # Create EDA plots with better font sizes
+    # Creating EDA plots with better font sizes
     create_eda_plots(train_df)
     
-    # Preprocess data
+    # Preprocessing data
     print("\n2. 🔧 Preprocessing data...")
     preprocessor = DataPreprocessor()
     
-    # Preprocess training data
+    # Preprocessing training data
     X_train, y_train = preprocessor.preprocess_train(train_df)
     print(f"   Preprocessed training features shape: {X_train.shape}")
     print(f"   Features: {list(X_train.columns)}")
     
-    # Train and evaluate models
+    # Training and evaluating models
     print("\n3. 🤖 Training models...")
     trainer = ModelTrainer()
     results = trainer.train_and_evaluate(X_train, y_train)
     
-    # Create model comparison plot
+    # Creating model comparison plot
     trainer.create_model_comparison_plot(results)
     
-    # Use the best model from evaluation
+    # Using the best model from evaluation
     best_model_name = trainer.best_model
     best_model = results[best_model_name]['model']
     trainer.save_model(best_model, 'titanic_model.pkl')
     
-    # Make predictions on test data
+    # Making predictions on test data
     print("\n4. 🔮 Making predictions on test data...")
     
     # Preprocess test data USING THE SAME PREPROCESSOR
     X_test, passenger_ids = preprocessor.preprocess_test(test_df)
     
-    # Check if features match
+    # To Check if features match
     print(f"   Training features: {X_train.columns.tolist()}")
     print(f"   Test features: {X_test.columns.tolist()}")
     
-    # Ensure same number of features
+    # Ensuring same number of features
     if X_train.shape[1] != X_test.shape[1]:
         print(f"   WARNING: Feature mismatch! Train: {X_train.shape[1]}, Test: {X_test.shape[1]}")
         print("   Attempting to fix...")
         
-        # Find missing features
+        # Finding missing features
         missing_in_test = set(X_train.columns) - set(X_test.columns)
         missing_in_train = set(X_test.columns) - set(X_train.columns)
         
@@ -265,11 +260,11 @@ def main():
         # Reorder to match
         X_test = X_test[X_train.columns]
     
-    # Load the best model and make predictions
+    # Loading the best model and make predictions
     loaded_model = trainer.load_model('titanic_model.pkl')
     predictions = loaded_model.predict(X_test)
     
-    # Create submission file
+    # Creating submission file
     submission = pd.DataFrame({
         'PassengerId': passenger_ids,
         'Survived': predictions
@@ -278,7 +273,7 @@ def main():
     submission.to_csv('submission.csv', index=False)
     print("   ✓ Submission file saved as 'submission.csv'")
     
-    # Display results
+    # Displaying results
     print("\n" + "=" * 50)
     print("🎉 PROJECT COMPLETED SUCCESSFULLY!")
     print("=" * 50)
