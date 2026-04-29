@@ -182,22 +182,19 @@ with result_col1:
 with result_col2:
     # Show probability as a horizontal gauge
     gauge_df = pd.DataFrame({"label": ["Survival probability"], "value": [proba]})
-    gauge = (
-        alt.Chart(gauge_df)
-        .mark_bar(height=40, color="#3B82F6")
-        .encode(
-            x=alt.X("value:Q", scale=alt.Scale(domain=[0, 1]), title="Survival probability"),
-            y=alt.Y("label:N", title=None, axis=None),
-        )
-        .properties(height=80)
+    base = alt.Chart(gauge_df).encode(
+        y=alt.Y("label:N", title=None, axis=None),
     )
-    threshold = (
-        alt.Chart(pd.DataFrame({"x": [0.5]}))
-        .mark_rule(color="white", strokeDash=[4, 4])
-        .encode(x="x:Q")
+    bar = base.mark_bar(height=40, color="#3B82F6").encode(
+        x=alt.X("value:Q", scale=alt.Scale(domain=[0, 1]), title="Survival probability"),
     )
-    st.altair_chart(gauge + threshold, use_container_width=True)
-    st.caption("Dashed line = 50% decision boundary.")
+    threshold = alt.Chart(pd.DataFrame({"x": [0.5]})).mark_rule(
+        color="#FCD34D", strokeWidth=2, strokeDash=[6, 4]
+    ).encode(
+        x=alt.X("x:Q", scale=alt.Scale(domain=[0, 1])),
+    )
+    st.altair_chart(bar + threshold, use_container_width=True)
+    st.caption("Yellow dashed line = 50% decision boundary.")
 
 st.divider()
 
