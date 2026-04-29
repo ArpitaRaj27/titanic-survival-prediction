@@ -1,5 +1,5 @@
 """
-Titanic Survival Predictor — Streamlit dashboard
+Titanic Survival Predictor - Streamlit dashboard
 Wraps the existing src/data_preprocessing.py with a UI and an interactive
 "would I have survived?" prediction form.
 """
@@ -24,7 +24,7 @@ st.set_page_config(page_title="Titanic Survival Predictor", layout="wide", page_
 
 st.title("Would you have survived the Titanic?")
 st.markdown(
-    "##### A binary classification model trained on 891 real passenger records — try it on yourself."
+    "##### A binary classification model trained on 891 real passenger records. Try it on yourself."
 )
 st.caption(
     "Logistic Regression + Random Forest · scikit-learn · pandas · Streamlit  ·  "
@@ -299,15 +299,15 @@ st.divider()
 st.subheader("Model performance")
 
 m1, m2, m3, m4 = st.columns(4)
-m1.metric("Logistic Regression — test acc", f"{state['lr_acc']:.1%}")
-m2.metric("Logistic Regression — 5-fold CV", f"{state['lr_cv']:.1%}")
-m3.metric("Random Forest — test acc", f"{state['rf_acc']:.1%}")
-m4.metric("Random Forest — 5-fold CV", f"{state['rf_cv']:.1%}")
+m1.metric("Logistic Regression - test acc", f"{state['lr_acc']:.1%}")
+m2.metric("Logistic Regression - 5-fold CV", f"{state['lr_cv']:.1%}")
+m3.metric("Random Forest - test acc", f"{state['rf_acc']:.1%}")
+m4.metric("Random Forest - 5-fold CV", f"{state['rf_cv']:.1%}")
 
 cm_col, fi_col = st.columns(2)
 
 with cm_col:
-    st.markdown(f"**Confusion matrix — {model_choice}**")
+    st.markdown(f"**Confusion matrix - {model_choice}**")
     model = state["models"][model_choice]
     y_pred = model.predict(state["X_test"])
     cm = confusion_matrix(state["y_test"], y_pred)
@@ -361,7 +361,7 @@ st.divider()
 # ============================================================
 # 5. METHODOLOGY
 # ============================================================
-with st.expander("🔧 How it was built (methodology)"):
+with st.expander("How it was built (methodology)"):
     st.markdown(
         """
         **Pipeline:**
@@ -374,7 +374,7 @@ with st.expander("🔧 How it was built (methodology)"):
         5. **Evaluation:** 80/20 stratified train/test split + 5-fold cross-validation.
 
         **Why two models?** LR gives a simple, interpretable linear baseline; RF captures nonlinear
-        interactions (e.g. third-class women survived less than first-class women — class and sex
+        interactions (e.g. third-class women survived less than first-class women, class and sex
         interact). The RF beats LR by a few points and is the default selection above.
         """
     )
