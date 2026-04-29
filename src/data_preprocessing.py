@@ -19,7 +19,7 @@ class DataPreprocessor:
         df = df.copy()
         
         # Extract title from name
-        df['Title'] = df['Name'].str.extract(' ([A-Za-z]+)\.', expand=False)
+        df['Title'] = df['Name'].str.extract(r' ([A-Za-z]+)\.', expand=False)
         df['Title'] = df['Title'].replace(['Lady', 'Countess','Capt', 'Col', 'Don', 
                                            'Dr', 'Major', 'Rev', 'Sir', 'Jonkheer', 'Dona'], 'Rare')
         df['Title'] = df['Title'].replace('Mlle', 'Miss')
@@ -31,8 +31,8 @@ class DataPreprocessor:
         df['IsAlone'] = (df['FamilySize'] == 1).astype(int)
         
         # Fill missing values
-        df['Age'] = self.age_imputer.fit_transform(df[['Age']])
-        df['Embarked'] = self.embarked_imputer.fit_transform(df[['Embarked']])
+        df['Age'] = self.age_imputer.fit_transform(df[['Age']]).ravel()
+        df['Embarked'] = self.embarked_imputer.fit_transform(df[['Embarked']]).ravel()
         
         # Drop unnecessary columns
         df = df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
@@ -63,7 +63,7 @@ class DataPreprocessor:
         df = df.copy()
         
         # Extract title
-        df['Title'] = df['Name'].str.extract(' ([A-Za-z]+)\.', expand=False)
+        df['Title'] = df['Name'].str.extract(r' ([A-Za-z]+)\.', expand=False)
         df['Title'] = df['Title'].replace(['Lady', 'Countess','Capt', 'Col', 'Don', 
                                            'Dr', 'Major', 'Rev', 'Sir', 'Jonkheer', 'Dona'], 'Rare')
         df['Title'] = df['Title'].replace('Mlle', 'Miss')
@@ -75,9 +75,9 @@ class DataPreprocessor:
         df['IsAlone'] = (df['FamilySize'] == 1).astype(int)
         
         # Fill missing values
-        df['Age'] = self.age_imputer.transform(df[['Age']])
-        df['Fare'] = self.fare_imputer.fit_transform(df[['Fare']])
-        df['Embarked'] = self.embarked_imputer.transform(df[['Embarked']])
+        df['Age'] = self.age_imputer.transform(df[['Age']]).ravel()
+        df['Fare'] = self.fare_imputer.fit_transform(df[['Fare']]).ravel()
+        df['Embarked'] = self.embarked_imputer.transform(df[['Embarked']]).ravel()
         
         # Store PassengerId for submission
         passenger_ids = df['PassengerId'].copy()
