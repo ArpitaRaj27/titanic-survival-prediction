@@ -1,155 +1,80 @@
-# Titanic Survival Prediction 🚢
+# Would you have survived the Titanic?
 
-A machine learning project that predicts passenger survival on the Titanic using various classification algorithms.
+**A binary classification model trained on 891 real passenger records — with a live "try it yourself" interface.**
+Logistic Regression and Random Forest models predicting survival from passenger class, age, sex, fare, family size, and inferred social title.
 
-![Titanic](https://img.shields.io/badge/Project-Titanic-blue)
-![Python](https://img.shields.io/badge/Python-3.9+-yellow)
-![Machine Learning](https://img.shields.io/badge/ML-Classification-green)
-![Status](https://img.shields.io/badge/Status-Completed-success)
+🔗 **[Try the live demo →](https://your-app.streamlit.app)** &nbsp;·&nbsp;  [Source on GitHub](https://github.com/ArpitaRaj27/titanic-survival-prediction)
 
-## 📋 Project Overview
+---
 
-This project implements a binary classification model to predict whether a passenger survived the Titanic disaster based on features like:
-- Passenger class
-- Gender
-- Age
-- Fare
-- Family size
-- Embarkment port
+## What you can do with it
 
-## 🎯 Project Goals
+- **Try the model on yourself or a famous passenger** — sliders for age/fare/family size, dropdowns for class/sex/port, get a live survival probability
+- **See the patterns** — interactive charts showing how class, sex, age, and fare drove survival
+- **Inspect the model** — confusion matrix, feature importances, and accuracy metrics for both models
 
-1. Perform Exploratory Data Analysis (EDA) on Titanic dataset
-2. Clean and preprocess the data
-3. Engineer new features
-4. Train multiple machine learning models
-5. Evaluate and compare model performance
-6. Make predictions on test data for Kaggle submission
+## Sanity check: it gets the famous passengers right
 
-## 📊 Dataset
+| Passenger | Predicted survival probability | Reality |
+|---|---|---|
+| Jack Dawson (3rd class, 20yo male, alone) | 4.6% | died |
+| Rose DeWitt Bukater (1st class, 17yo female, family) | 99.5% | survived |
+| Captain Edward Smith | 10.0% | died |
+| Molly Brown ("the Unsinkable") | 90.0% | survived |
 
-The dataset comes from Kaggle's [Titanic: Machine Learning from Disaster](https://www.kaggle.com/c/titanic/data) competition.
+## Performance
 
-**Files:**
-- `train.csv` - Training data (891 passengers with survival labels)
-- `test.csv` - Test data (418 passengers without survival labels)
+- **Random Forest:** 83.2% test accuracy, 80.5% 5-fold CV
+- **Logistic Regression:** 81.0% test accuracy, 81.3% 5-fold CV
 
-## 🏗️ Project Structure
-titanic-survival-prediction/
-├── data/ # Dataset files
-│ ├── train.csv # Training data
-│ └── test.csv # Test data
-├── src/ # Source code
-│ ├── data_preprocessing.py # Data cleaning and preprocessing
-│ └── model_training.py # Model training and evaluation
-├── notebooks/ # Jupyter notebooks for exploration
-├── main.py # Main execution script
-├── requirements.txt # Python dependencies
-├── README.md # Project documentation
-└── .gitignore # Files to ignore in Git
+---
 
-text
+## How it was built
 
-## 🛠️ Installation & Setup
+1. **Data:** 891-passenger Kaggle Titanic dataset, 12 raw features
+2. **Feature engineering:** extracted `Title` from passenger names (Mr/Mrs/Miss/Master/Rare), computed `FamilySize` and `IsAlone`
+3. **Preprocessing:** median imputation for `Age`/`Fare`, mode imputation for `Embarked`, label encoding for categoricals, `StandardScaler` on numerical features
+4. **Models:** Logistic Regression (interpretable baseline) + Random Forest (200 trees)
+5. **Evaluation:** 80/20 stratified train/test split + 5-fold cross-validation
 
-### Prerequisites
-- Python 3.9+
-- pip package manager
+**Stack:** Python · pandas · numpy · scikit-learn · Streamlit · Altair
 
-### Steps
-1. Clone the repository:
+---
+
+## Run locally
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/titanic-survival-prediction.git
+git clone https://github.com/ArpitaRaj27/titanic-survival-prediction.git
 cd titanic-survival-prediction
-Create virtual environment:
-
-bash
-python3 -m venv venv
-source venv/bin/activate  # On Mac/Linux
-# venv\Scripts\activate   # On Windows
-Install dependencies:
-
-bash
 pip install -r requirements.txt
-Download the dataset from Kaggle and place in data/ folder.
+streamlit run streamlit_app.py
+```
 
-🚀 Usage
-Run the complete project:
+Opens at `http://localhost:8501`.
 
-bash
-python main.py
+---
 
-This will:
-- Load and analyze the data
-- Create visualizations
-- Train machine learning models
-- Generate predictions for test data
+## Project structure
 
-🤖 Machine Learning Models Implemented
+```
+streamlit_app.py            # Dashboard + prediction UI
+requirements.txt
+data/
+  train.csv                 # 891 labeled passengers
+  test.csv                  # Unlabeled holdout
+src/
+  data_preprocessing.py     # Feature engineering + scaling pipeline
+  __init__.py
+.streamlit/
+  config.toml               # Theme
+```
 
-1. Logistic Regression - Baseline model
-2. Random Forest Classifier - Ensemble method
+Models train at app startup (cached) so there's no `.pkl` file to manage — avoids sklearn version mismatches across environments.
 
-Model Performance:
+---
 
-1. Logistic Regression: ~81% accuracy
-2. Random Forest: ~82-83% accuracy
+## What I learned
 
-📈 Key Findings
-
-Exploratory Data Analysis:
-1. Overall survival rate: 38.4%
-2. Gender disparity: 74.2% of women survived vs 18.9% of men
-3. Class advantage: 1st class had 63% survival vs 24% for 3rd class
-4. Age factor: Children under 10 had higher survival rates
-
-Feature Importance:
-1. Gender (most important predictor)
-2. Passenger Class
-3. Age
-4. Fare
-5. Title (extracted from name)
-
-📁 Output Files
-The project generates several files:
-
-Visualizations:
-
-- titanic_eda_large.png - 9 EDA plots
-- correlation_heatmap_large.png - Feature correlations
-- confusion_matrix_*.png - Model performance
-- model_comparison.png - Model accuracy comparison
-
-Predictions:
-
-- submission.csv - Kaggle submission file
-
-Model:
-
-- titanic_model.pkl - Trained model file
-
-### What I Learned
-This project helped me understand:
-Data preprocessing and cleaning techniques
-Feature engineering (creating new features from existing data)
-Handling missing values in datasets
-Training and evaluating classification models
-Hyperparameter tuning
-Creating informative data visualizations
-Version control with Git and GitHub
-
-🔧 Technologies Used
-Python - Primary programming language
-Pandas & NumPy - Data manipulation
-Scikit-learn - Machine learning algorithms
-Matplotlib & Seaborn - Data visualization
-Jupyter - Interactive exploration
-
-
-📄 License
-This project is open source and available under the MIT License.
-
-Acknowledgments:
-Kaggle for hosting the competition and providing the dataset
-The Titanic dataset from the National Archives
-All open-source libraries used in this project
+- Feature engineering matters more than model choice — `Title` and `FamilySize` (both engineered) outweigh most raw features in the RF importance ranking
+- Class × sex interaction matters: Random Forest captures it, Logistic Regression underestimates it
+- A well-presented model demo beats a notebook every time — recruiters can play with the interactive form in 30 seconds
